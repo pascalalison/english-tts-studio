@@ -1,0 +1,2885 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>English Text-to-Speech Learning Studio</title>
+  <style id="app-styles">
+    :root {
+      --navy-950: #081829;
+      --navy-900: #0d233a;
+      --navy-800: #143354;
+      --navy-700: #1d4672;
+      --blue-600: #2563eb;
+      --blue-500: #3b82f6;
+      --blue-400: #60a5fa;
+      --blue-200: #bfdbfe;
+      --blue-100: #dbeafe;
+      --blue-50: #eff6ff;
+
+      --bg-page: linear-gradient(160deg, #f3f8ff 0%, #e7f0fc 50%, #f8fbff 100%);
+      --bg-card: #ffffff;
+      --bg-subtle: #f4f8fd;
+      --bg-input: #ffffff;
+      --border-color: #d6e4f5;
+      --border-strong: #93c5fd;
+      --text-primary: #0f243d;
+      --text-secondary: #425a75;
+      --text-muted: #647b96;
+
+      --success-bg: #ecfdf5;
+      --success-border: #6ee7b7;
+      --success-text: #065f46;
+
+      --warning-bg: #fffbeb;
+      --warning-border: #fcd34d;
+      --warning-text: #92400e;
+
+      --error-bg: #fef2f2;
+      --error-border: #fca5a5;
+      --error-text: #991b1b;
+
+      --shadow-sm: 0 2px 8px rgba(13, 35, 58, 0.06);
+      --shadow-md: 0 10px 28px rgba(13, 35, 58, 0.09);
+      --shadow-lg: 0 18px 44px rgba(13, 35, 58, 0.14);
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --transition: 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg-page: linear-gradient(160deg, #071320 0%, #0b1c2e 55%, #081625 100%);
+      --bg-card: #0f243a;
+      --bg-subtle: #142d47;
+      --bg-input: #0a1b2d;
+      --border-color: #1f3e5f;
+      --border-strong: #3b82f6;
+      --text-primary: #f1f6fc;
+      --text-secondary: #b9cde4;
+      --text-muted: #88a4c2;
+
+      --blue-50: #152e4b;
+      --blue-100: #1b3b60;
+
+      --success-bg: #082f24;
+      --success-border: #10b981;
+      --success-text: #a7f3d0;
+
+      --warning-bg: #332406;
+      --warning-border: #f59e0b;
+      --warning-text: #fde68a;
+
+      --error-bg: #361215;
+      --error-border: #ef4444;
+      --error-text: #fecaca;
+
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.28);
+      --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.38);
+      --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.52);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+      color: inherit;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Header */
+    .site-header {
+      background: linear-gradient(125deg, var(--navy-950) 0%, var(--navy-800) 60%, var(--navy-700) 100%);
+      color: #ffffff;
+      padding: 1.15rem 1.25rem;
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .brand-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue-500), var(--blue-400));
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: clamp(1.12rem, 2.2vw, 1.48rem);
+      font-weight: 750;
+      letter-spacing: -0.015em;
+      color: #ffffff;
+    }
+
+    .brand-subtitle {
+      margin: 0.1rem 0 0;
+      font-size: 0.9rem;
+      color: #cfe3fb;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+    }
+
+    .header-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.42rem;
+      padding: 0.5rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(191, 219, 254, 0.28);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition), border-color var(--transition);
+    }
+
+    .header-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(191, 219, 254, 0.55);
+      transform: translateY(-1px);
+    }
+
+    .header-btn:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible {
+      outline: 3px solid var(--blue-400);
+      outline-offset: 2px;
+    }
+
+    /* Main Container */
+    .main-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 1.75rem 1.25rem 3.5rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.4rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .section-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .step-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--navy-800), var(--blue-600));
+      color: #ffffff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .section-desc {
+      margin: 0.2rem 0 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Classroom Access Gate */
+    .access-gate-wrap {
+      max-width: 520px;
+      margin: 2.25rem auto;
+    }
+
+    .access-card {
+      padding: 2rem;
+      text-align: left;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .access-hero {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .access-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: var(--blue-50);
+      color: var(--blue-600);
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+
+    .form-group {
+      margin-top: 1.1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--text-primary);
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 0.78rem 0.95rem;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 0.98rem;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .text-input:focus {
+      border-color: var(--blue-500);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16);
+      outline: none;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.68rem 1.15rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      font-size: 0.92rem;
+      font-weight: 650;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+
+    .btn:disabled {
+      opacity: 0.58;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--navy-800) 0%, var(--blue-600) 100%);
+      color: #ffffff;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      filter: brightness(1.07);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-subtle);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      border-color: var(--border-strong);
+      background: var(--blue-50);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border-color: var(--border-color);
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+    }
+
+    .btn-lg {
+      padding: 0.95rem 1.75rem;
+      font-size: 1.03rem;
+      border-radius: 14px;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    /* Text Editor Section */
+    .editor-toolbar {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .passage-textarea {
+      width: 100%;
+      min-height: 210px;
+      padding: 1rem 1.1rem;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 1rem;
+      line-height: 1.65;
+      resize: vertical;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .passage-textarea:focus {
+      border-color: var(--blue-500);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16);
+      outline: none;
+    }
+
+    .passage-textarea.limit-error {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+    }
+
+    .editor-stats-bar {
+      margin-top: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    .stats-pills {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.32rem 0.7rem;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      font-weight: 600;
+    }
+
+    .stat-pill.warn {
+      background: var(--warning-bg);
+      border-color: var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    .stat-pill.over {
+      background: var(--error-bg);
+      border-color: var(--error-border);
+      color: var(--error-text);
+    }
+
+    /* Banners */
+    .alert-banner {
+      margin-top: 0.85rem;
+      padding: 0.8rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+
+    .alert-warning {
+      background: var(--warning-bg);
+      border-color: var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    .alert-error {
+      background: var(--error-bg);
+      border-color: var(--error-border);
+      color: var(--error-text);
+    }
+
+    .alert-success {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+
+    .alert-info {
+      background: var(--blue-50);
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+
+    /* Voice Selection */
+    .independent-selectors {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+    }
+
+    .selector-group-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .segmented-control {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.45rem;
+    }
+
+    .seg-btn {
+      padding: 0.62rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-weight: 650;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .seg-btn:hover {
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+
+    .seg-btn.active {
+      background: linear-gradient(135deg, var(--navy-800), var(--blue-600));
+      border-color: transparent;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.22);
+    }
+
+    .voice-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 0.95rem;
+    }
+
+    .voice-card {
+      position: relative;
+      padding: 1.1rem;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border-color);
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.85rem;
+    }
+
+    .voice-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .voice-card.selected {
+      border-color: var(--blue-500);
+      background: var(--blue-50);
+      box-shadow: 0 8px 22px rgba(59, 130, 246, 0.16);
+    }
+
+    .voice-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .voice-name {
+      margin: 0;
+      font-size: 1.02rem;
+      font-weight: 750;
+      color: var(--text-primary);
+    }
+
+    .voice-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.45rem;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .voice-card.selected .badge-accent {
+      background: var(--blue-600);
+      color: #ffffff;
+      border-color: transparent;
+    }
+
+    .voice-desc {
+      margin: 0;
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+    }
+
+    .voice-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .selected-indicator {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--blue-600);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    [data-theme="dark"] .selected-indicator {
+      color: var(--blue-400);
+    }
+
+    .preview-btn {
+      padding: 0.4rem 0.72rem;
+      font-size: 0.8rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 650;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.32rem;
+      transition: all var(--transition);
+    }
+
+    .preview-btn:hover:not(:disabled) {
+      border-color: var(--blue-500);
+      color: var(--blue-600);
+    }
+
+    /* Audio Generation & Player */
+    .generate-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .selected-summary {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+    }
+
+    .selected-summary strong {
+      color: var(--text-primary);
+    }
+
+    .loading-status {
+      margin-top: 1rem;
+      padding: 0.95rem 1.1rem;
+      border-radius: var(--radius-md);
+      background: var(--blue-50);
+      border: 1px solid var(--border-strong);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-weight: 600;
+    }
+
+    .spinner {
+      width: 22px;
+      height: 22px;
+      border: 3px solid rgba(59, 130, 246, 0.25);
+      border-top-color: var(--blue-600);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .player-panel {
+      margin-top: 1.25rem;
+      padding: 1.25rem;
+      border-radius: var(--radius-md);
+      background: linear-gradient(145deg, var(--bg-subtle), var(--bg-card));
+      border: 1.5px solid var(--border-strong);
+    }
+
+    .player-top-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .player-title {
+      font-weight: 750;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .player-controls-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .play-circle-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--navy-800), var(--blue-600));
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+      transition: transform var(--transition);
+    }
+
+    .play-circle-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .progress-wrap {
+      flex: 1;
+      min-width: 190px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.28rem;
+    }
+
+    .progress-slider {
+      width: 100%;
+      accent-color: var(--blue-600);
+      cursor: pointer;
+      height: 6px;
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+    }
+
+    .player-bottom-row {
+      margin-top: 1rem;
+      padding-top: 0.95rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .speed-group {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .speed-label {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-right: 0.2rem;
+    }
+
+    .speed-btn {
+      padding: 0.34rem 0.62rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      font-size: 0.82rem;
+      font-weight: 650;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .speed-btn.active {
+      background: var(--blue-600);
+      color: #ffffff;
+      border-color: transparent;
+    }
+
+    .player-actions {
+      display: flex;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+    }
+
+    /* Practice Tips */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .tip-item {
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .tip-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--blue-600);
+      color: #ffffff;
+      font-size: 0.82rem;
+      font-weight: 750;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    .tip-text {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 24, 41, 0.68);
+      backdrop-filter: blur(4px);
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      z-index: 100;
+    }
+
+    .modal-dialog {
+      width: 100%;
+      max-width: 880px;
+      max-height: 90vh;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-dialog.modal-sm {
+      max-width: 520px;
+    }
+
+    .modal-header {
+      padding: 1.1rem 1.4rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: var(--bg-subtle);
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 750;
+    }
+
+    .modal-body {
+      padding: 1.35rem;
+      overflow-y: auto;
+    }
+
+    .tabs-bar {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+
+    .tab-btn {
+      padding: 0.48rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-subtle);
+      font-size: 0.84rem;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--blue-600);
+      color: #ffffff;
+      border-color: transparent;
+    }
+
+    .code-block-wrap {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .code-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.55rem 0.9rem;
+      background: var(--navy-900);
+      color: #e2e8f0;
+      font-size: 0.84rem;
+      font-weight: 650;
+    }
+
+    .code-pre {
+      margin: 0;
+      padding: 1rem;
+      background: #081523;
+      color: #e2ecf8;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      max-height: 360px;
+      overflow: auto;
+      white-space: pre;
+    }
+
+    .guide-section {
+      margin-bottom: 1.25rem;
+    }
+
+    .guide-section h3 {
+      margin: 0 0 0.45rem;
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+
+    .guide-section ol,
+    .guide-section ul {
+      margin: 0.35rem 0 0;
+      padding-left: 1.3rem;
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+    }
+
+    .guide-section li {
+      margin-bottom: 0.38rem;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      padding: 0.5rem 0.65rem;
+      border-radius: 8px;
+      background: var(--bg-subtle);
+      margin-bottom: 0.45rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    code.inline-code {
+      padding: 0.12rem 0.4rem;
+      border-radius: 6px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.84em;
+    }
+
+    .site-footer {
+      text-align: center;
+      padding: 1.2rem;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding: 1.15rem;
+        border-radius: 18px;
+      }
+      .access-card {
+        padding: 1.35rem;
+      }
+      .btn-lg {
+        width: 100%;
+      }
+      .player-actions {
+        width: 100%;
+      }
+      .player-actions .btn {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            <line x1="12" x2="12" y1="19" y2="22" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">English Text-to-Speech Learning Studio</h1>
+          <p class="brand-subtitle">Turn your English texts into natural speech.</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="header-btn" id="openSetupModalBtn" aria-label="Open teacher setup and source code">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
+          </svg>
+          <span>Setup &amp; Source Code</span>
+        </button>
+
+        <button type="button" class="header-btn" id="openWorkerSettingsBtn" aria-label="Configure backend Worker URL">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+          </svg>
+          <span>Backend URL</span>
+        </button>
+
+        <button type="button" class="header-btn" id="themeToggleBtn" aria-label="Toggle light or dark mode">
+          <svg id="themeIconSun" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
+          </svg>
+          <svg id="themeIconMoon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </svg>
+          <span id="themeLabel">Dark Mode</span>
+        </button>
+
+        <button type="button" class="header-btn hidden" id="signOutBtn" aria-label="Lock studio and clear class access code">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          <span>Change Code</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- Classroom Access Gate -->
+    <section id="accessGateSection" class="access-gate-wrap" aria-labelledby="accessGateHeading">
+      <div class="card access-card">
+        <div class="access-hero">
+          <div class="access-icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </div>
+          <div>
+            <h2 id="accessGateHeading" class="section-title">Classroom Access</h2>
+            <p class="section-desc">Enter the class access code provided by your teacher to unlock Gemini TTS audio generation.</p>
+          </div>
+        </div>
+
+        <div id="workerConfigNotice" class="alert-banner alert-warning hidden" role="status">
+          <span>
+            <strong>Backend URL required:</strong> Configure your deployed Cloudflare Worker URL via
+            <strong>Backend URL</strong> in the top bar (or in <code class="inline-code">script.js</code>) before verifying your class code.
+          </span>
+        </div>
+
+        <form id="accessCodeForm" novalidate>
+          <div class="form-group">
+            <label for="classAccessCodeInput" class="form-label">Class Access Code</label>
+            <input
+              id="classAccessCodeInput"
+              type="password"
+              class="text-input"
+              placeholder="Enter your class access code..."
+              autocomplete="off"
+              required
+            />
+          </div>
+
+          <div id="accessErrorBanner" class="alert-banner alert-error hidden" role="alert"></div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-lg btn-full" id="verifyCodeBtn">
+              <span>Unlock Learning Studio</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Main Studio Workspace -->
+    <div id="studioWorkspace" class="studio-grid hidden">
+      <!-- Step 1: Text Input -->
+      <section class="card" aria-labelledby="textSectionHeading">
+        <div class="section-header">
+          <div class="section-title-group">
+            <span class="step-badge" aria-hidden="true">1</span>
+            <div>
+              <h2 id="textSectionHeading" class="section-title">English Passage</h2>
+              <p class="section-desc">Your exact text will be spoken word for word without rewriting or translation.</p>
+            </div>
+          </div>
+          <div class="editor-toolbar">
+            <button type="button" class="btn btn-secondary" id="sampleTextBtn">Sample Text</button>
+            <button type="button" class="btn btn-ghost" id="clearTextBtn">Clear Text</button>
+          </div>
+        </div>
+
+        <label for="englishTextInput" class="sr-only">English text passage to convert into speech</label>
+        <textarea
+          id="englishTextInput"
+          class="passage-textarea"
+          placeholder="Paste or type your English text here..."
+          spellcheck="true"
+        ></textarea>
+
+        <div class="editor-stats-bar">
+          <div class="stats-pills">
+            <span class="stat-pill" id="wordCountPill">0 words</span>
+            <span class="stat-pill" id="charCountPill">0 / 3,000 characters</span>
+            <span class="stat-pill" id="durationPill">Est. listening: 0 sec</span>
+          </div>
+          <span id="limitHintText">Maximum 3,000 characters</span>
+        </div>
+
+        <div id="textWarningBanner" class="alert-banner alert-warning hidden" role="status"></div>
+        <div id="textErrorBanner" class="alert-banner alert-error hidden" role="alert"></div>
+      </section>
+
+      <!-- Step 2: Voice Selection -->
+      <section class="card" aria-labelledby="voiceSectionHeading">
+        <div class="section-header">
+          <div class="section-title-group">
+            <span class="step-badge" aria-hidden="true">2</span>
+            <div>
+              <h2 id="voiceSectionHeading" class="section-title">Choose Voice &amp; Accent</h2>
+              <p class="section-desc">Select an accent and gender, or pick one of the four Gemini 3.8 Flash TTS profiles directly.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Independent Selectors -->
+        <div class="independent-selectors">
+          <div>
+            <span class="selector-group-label" id="accentGroupLabel">Accent</span>
+            <div class="segmented-control" role="group" aria-labelledby="accentGroupLabel">
+              <button type="button" class="seg-btn active" data-accent-btn="british" aria-pressed="true">
+                British English
+              </button>
+              <button type="button" class="seg-btn" data-accent-btn="american" aria-pressed="false">
+                American English
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <span class="selector-group-label" id="genderGroupLabel">Gender</span>
+            <div class="segmented-control" role="group" aria-labelledby="genderGroupLabel">
+              <button type="button" class="seg-btn" data-gender-btn="male" aria-pressed="false">
+                Male Voice
+              </button>
+              <button type="button" class="seg-btn active" data-gender-btn="female" aria-pressed="true">
+                Female Voice
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Selectable Voice Cards -->
+        <div id="voiceCardsContainer" class="voice-cards-grid" role="radiogroup" aria-label="Voice profiles"></div>
+
+        <div id="previewStatusBanner" class="alert-banner alert-error hidden" role="alert"></div>
+      </section>
+
+      <!-- Step 3: Audio Generation & Playback -->
+      <section class="card" aria-labelledby="audioSectionHeading">
+        <div class="section-header">
+          <div class="section-title-group">
+            <span class="step-badge" aria-hidden="true">3</span>
+            <div>
+              <h2 id="audioSectionHeading" class="section-title">Generate &amp; Listen</h2>
+              <p class="section-desc">Create studio-grade WAV speech with Gemini 3.8 Flash TTS and adjust playback speed for study.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="generate-bar">
+          <div class="selected-summary" id="selectedVoiceSummary">
+            Active voice: <strong>British Female</strong>
+          </div>
+          <button type="button" class="btn btn-primary btn-lg" id="generateAudioBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            </svg>
+            <span>Generate Audio</span>
+          </button>
+        </div>
+
+        <div id="generationLoading" class="loading-status hidden" role="status" aria-live="polite">
+          <div class="spinner" aria-hidden="true"></div>
+          <span id="loadingMessage">Generating natural speech with Gemini 3.8 Flash TTS...</span>
+        </div>
+
+        <div id="generationErrorBanner" class="alert-banner alert-error hidden" role="alert"></div>
+
+        <div id="audioPlayerPanel" class="player-panel hidden" aria-label="Generated audio player">
+          <div class="player-top-meta">
+            <div class="player-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 18V5l12-2v13" />
+                <circle cx="6" cy="18" r="3" />
+                <circle cx="18" cy="16" r="3" />
+              </svg>
+              <span id="playerTrackTitle">British_Female_Practice.wav</span>
+            </div>
+            <span class="badge" id="playerFormatBadge">WAV Audio (audio/wav)</span>
+          </div>
+
+          <audio id="nativeAudioEl" class="sr-only" preload="auto"></audio>
+
+          <div class="player-controls-row">
+            <button type="button" class="play-circle-btn" id="playPauseBtn" aria-label="Play audio">
+              <svg id="playIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <polygon points="6 4 20 12 6 20 6 4" />
+              </svg>
+              <svg id="pauseIcon" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+              </svg>
+            </button>
+
+            <button type="button" class="btn btn-secondary" id="replayBtn" aria-label="Replay audio from start">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              <span>Replay</span>
+            </button>
+
+            <div class="progress-wrap">
+              <label for="audioSeekSlider" class="sr-only">Playback progress</label>
+              <input id="audioSeekSlider" type="range" class="progress-slider" min="0" max="100" value="0" step="0.1" />
+              <div class="time-row">
+                <span id="currentTimeLabel">0:00</span>
+                <span id="totalTimeLabel">0:00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="player-bottom-row">
+            <div class="speed-group" role="group" aria-label="Playback speed">
+              <span class="speed-label">Speed:</span>
+              <button type="button" class="speed-btn" data-speed="0.75">0.75x</button>
+              <button type="button" class="speed-btn active" data-speed="1">1.0x</button>
+              <button type="button" class="speed-btn" data-speed="1.25">1.25x</button>
+              <button type="button" class="speed-btn" data-speed="1.5">1.5x</button>
+              <button type="button" class="speed-btn" data-speed="2">2.0x</button>
+            </div>
+
+            <div class="player-actions">
+              <button type="button" class="btn btn-secondary" id="regenerateAudioBtn">Regenerate Audio</button>
+              <button type="button" class="btn btn-primary" id="downloadAudioBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" x2="12" y1="15" y2="3" />
+                </svg>
+                <span>Download Audio</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Educational Practice Tips -->
+      <section class="card" aria-labelledby="practiceTipsHeading">
+        <div class="section-header">
+          <div class="section-title-group">
+            <span class="step-badge" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+              </svg>
+            </span>
+            <div>
+              <h2 id="practiceTipsHeading" class="section-title">How to Practise Listening</h2>
+              <p class="section-desc">Follow these five proven steps to build comprehension, pronunciation, and speaking fluency.</p>
+            </div>
+          </div>
+        </div>
+
+        <ol class="tips-grid" style="list-style: none; padding: 0; margin: 0;">
+          <li class="tip-item">
+            <span class="tip-num" aria-hidden="true">1</span>
+            <p class="tip-text">Listen to the audio without reading the passage.</p>
+          </li>
+          <li class="tip-item">
+            <span class="tip-num" aria-hidden="true">2</span>
+            <p class="tip-text">Listen again while following the written text.</p>
+          </li>
+          <li class="tip-item">
+            <span class="tip-num" aria-hidden="true">3</span>
+            <p class="tip-text">Pause after each sentence and repeat it aloud.</p>
+          </li>
+          <li class="tip-item">
+            <span class="tip-num" aria-hidden="true">4</span>
+            <p class="tip-text">Compare British and American versions.</p>
+          </li>
+          <li class="tip-item">
+            <span class="tip-num" aria-hidden="true">5</span>
+            <p class="tip-text">Practise shadowing to improve fluency and intonation.</p>
+          </li>
+        </ol>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    English Text-to-Speech Learning Studio &middot; Powered by Gemini 3.8 Flash TTS &amp; Cloudflare Workers
+  </footer>
+
+  <!-- Backend Worker URL Modal -->
+  <div id="workerSettingsModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="workerModalTitle">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-header">
+        <h2 id="workerModalTitle" class="modal-title">Cloudflare Worker Endpoint</h2>
+        <button type="button" class="btn btn-ghost" id="closeWorkerModalBtn" aria-label="Close settings">Close</button>
+      </div>
+      <div class="modal-body">
+        <p class="section-desc" style="margin-bottom: 1rem;">
+          Enter the URL of your deployed Cloudflare Worker (<code class="inline-code">worker.js</code>). This keeps your Gemini API key and class access code securely on the backend.
+        </p>
+        <form id="workerUrlForm">
+          <label for="workerUrlInput" class="form-label">Worker URL</label>
+          <input
+            id="workerUrlInput"
+            type="url"
+            class="text-input"
+            placeholder="https://english-tts-worker.your-subdomain.workers.dev"
+            required
+          />
+          <div id="workerModalFeedback" class="alert-banner alert-success hidden" role="status"></div>
+          <div style="display: flex; gap: 0.6rem; margin-top: 1rem; justify-content: flex-end;">
+            <button type="button" class="btn btn-ghost" id="resetWorkerUrlBtn">Reset Default</button>
+            <button type="submit" class="btn btn-primary">Save Worker URL</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher / Developer Source Export & Setup Guide Modal -->
+  <div id="setupSourceModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="setupModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="setupModalTitle" class="modal-title">Project Source Files &amp; Deployment Guide</h2>
+        <button type="button" class="btn btn-ghost" id="closeSetupModalBtn" aria-label="Close source and setup modal">Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="tabs-bar" role="tablist" aria-label="Source and setup tabs">
+          <button type="button" class="tab-btn active" data-tab="frontend" role="tab" aria-selected="true">Project 1: Frontend</button>
+          <button type="button" class="tab-btn" data-tab="backend" role="tab" aria-selected="false">Project 2: Backend (worker.js)</button>
+          <button type="button" class="tab-btn" data-tab="guide" role="tab" aria-selected="false">Deployment Guide</button>
+          <button type="button" class="tab-btn" data-tab="checklist" role="tab" aria-selected="false">Testing Checklist</button>
+        </div>
+
+        <div id="tabPanelFrontend" class="tab-panel">
+          <p class="section-desc" style="margin-bottom: 0.9rem;">
+            Split frontend files ready for a GitHub Pages repository (<code class="inline-code">index.html</code>, <code class="inline-code">style.css</code>, <code class="inline-code">script.js</code>).
+          </p>
+          <div id="frontendFilesContainer"></div>
+        </div>
+
+        <div id="tabPanelBackend" class="tab-panel hidden">
+          <p class="section-desc" style="margin-bottom: 0.9rem;">
+            Separate Cloudflare Workers backend (<code class="inline-code">worker.js</code>) using the Gemini Interactions REST API (<code class="inline-code">gemini-3.8-flash-tts</code>).
+          </p>
+          <div id="backendFilesContainer"></div>
+        </div>
+
+        <div id="tabPanelGuide" class="tab-panel hidden">
+          <div class="guide-section">
+            <h3>1. Set Up the Gemini API Key</h3>
+            <ol>
+              <li>Sign in to <strong>Google AI Studio</strong> (<code class="inline-code">https://aistudio.google.com/</code>).</li>
+              <li>Open <strong>Get API key</strong> and create an API key in your Google Cloud project.</li>
+              <li>Verify that <code class="inline-code">gemini-3.8-flash-tts</code> is enabled and check your project quota/billing tier for classroom traffic.</li>
+            </ol>
+          </div>
+
+          <div class="guide-section">
+            <h3>2. Configure the Cloudflare Worker</h3>
+            <ol>
+              <li>Install Wrangler CLI or create a Worker in the Cloudflare Dashboard: <code class="inline-code">npm create cloudflare@latest english-tts-worker</code> (choose <em>Hello World</em> JS Worker).</li>
+              <li>Replace <code class="inline-code">src/index.js</code> (or <code class="inline-code">worker.js</code>) with the complete <code class="inline-code">worker.js</code> code from the <strong>Project 2: Backend</strong> tab.</li>
+              <li>Update <code class="inline-code">DEFAULT_ALLOWED_ORIGIN</code> in <code class="inline-code">worker.js</code> (or set <code class="inline-code">ALLOWED_ORIGIN</code> in <code class="inline-code">wrangler.toml</code>) to your exact GitHub Pages origin, e.g. <code class="inline-code">https://your-username.github.io</code>.</li>
+              <li>Deploy with <code class="inline-code">npx wrangler deploy</code> and note the generated <code class="inline-code">https://...workers.dev</code> URL.</li>
+            </ol>
+          </div>
+
+          <div class="guide-section">
+            <h3>3. Add the Two Cloudflare Secrets</h3>
+            <ol>
+              <li>Never store credentials in <code class="inline-code">wrangler.toml</code> or frontend code. Run these commands in your Worker directory:</li>
+              <li><code class="inline-code">npx wrangler secret put GEMINI_API_KEY</code> &rarr; paste your Google AI Studio API key.</li>
+              <li><code class="inline-code">npx wrangler secret put CLASS_ACCESS_CODE</code> &rarr; enter the classroom passcode you will share with students.</li>
+              <li>Alternatively, add both encrypted variables in <strong>Cloudflare Dashboard &rarr; Workers &amp; Pages &rarr; Your Worker &rarr; Settings &rarr; Variables and Secrets</strong>.</li>
+            </ol>
+          </div>
+
+          <div class="guide-section">
+            <h3>4. Connect the Frontend to the Worker URL</h3>
+            <ol>
+              <li>In <code class="inline-code">script.js</code>, edit <code class="inline-code">STUDIO_CONFIG.WORKER_URL</code> to your deployed <code class="inline-code">https://...workers.dev</code> URL.</li>
+              <li>You can also test immediately inside this page by clicking <strong>Backend URL</strong> in the header and saving your Worker URL.</li>
+            </ol>
+          </div>
+
+          <div class="guide-section">
+            <h3>5. Deploy the Frontend via GitHub Pages</h3>
+            <ol>
+              <li>Create a public GitHub repository (for example, <code class="inline-code">english-tts-studio</code>).</li>
+              <li>Upload <code class="inline-code">index.html</code>, <code class="inline-code">style.css</code>, and <code class="inline-code">script.js</code> to the root of the <code class="inline-code">main</code> branch.</li>
+              <li>Go to <strong>Repository Settings &rarr; Pages &rarr; Build and deployment</strong>, select <strong>Deploy from a branch</strong>, choose <code class="inline-code">main</code> / <code class="inline-code">/(root)</code>, and save.</li>
+              <li>Open <code class="inline-code">https://your-username.github.io/english-tts-studio/</code> and verify <code class="inline-code">ALLOWED_ORIGIN</code> on the Worker matches <code class="inline-code">https://your-username.github.io</code>.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div id="tabPanelChecklist" class="tab-panel hidden">
+          <div class="guide-section">
+            <h3>6. End-to-End Testing Checklist</h3>
+            <label class="checklist-item"><input type="checkbox" /> <span>Incorrect class access code returns 401 from backend and displays clear error (does not unlock studio).</span></label>
+            <label class="checklist-item"><input type="checkbox" /> <span>Valid class access code unlocks the studio and persists during the browser session.</span></label>
+            <label class="checklist-item"><input type="checkbox" /> <span>Empty text is rejected with a clear validation message before sending an API request.</span></label>
+            <label class="checklist-item"><input type="checkbox" /> <span>Pasting &gt;3,000 characters does NOT silently truncate; shows exact count and blocks generation until trimmed.</span></label>
+            <label class="checklist-item"><input type="checkbox" /> <span><strong>British Male</strong> (Charon + British RP style) generates real WAV audio and plays cleanly.</span></label>
+            <label class="checklist-item"><input type="checkbox" /> <span><strong>British Female</strong> (Kore + British RP style) generates real WAV audio and plays cleanly.</span></label>
+            <label class="checklist-item"><input type="checkbox" /> <span><strong>American Male</strong> (Orus + General American style) generates real WAV audio and plays cleanly.</span></label>
+            <label class="checklist-item"><input type="checkbox" /> <span><strong>American Female</strong> (Zephyr + General American style) generates real WAV audio and plays cleanly.</span></label>
+            <label class="checklist-item"><input type="checkbox" /> <span>Voice preview buttons fetch and play real Gemini TTS previews without overwriting student text.</span></label>
+            <label class="checklist-item"><input type="checkbox" /> <span>Play, pause, replay, seek bar, and speed controls (0.75x, 1.0x, 1.25x, 1.5x, 2.0x) work accurately.</span></label>
+            <label class="checklist-item"><input type="checkbox" /> <span>Download Audio saves a valid <code class="inline-code">.wav</code> file (e.g., <code class="inline-code">British_Female_Practice.wav</code>).</span></label>
+            <label class="checklist-item"><input type="checkbox" /> <span>Switching voice profile and clicking Regenerate Audio preserves the student passage and releases old Blob URLs.</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script id="main-app-script">
+    /**
+     * TEACHER / DEVELOPER CONFIGURATION OBJECT
+     * Edit WORKER_URL and VOICE_PROFILES here when deploying to GitHub Pages.
+     */
+    const STUDIO_CONFIG = {
+      WORKER_URL: "https://english-tts-worker.YOUR-SUBDOMAIN.workers.dev",
+      MAX_CHARS: 3000,
+      WARNING_CHARS: 2500,
+      WORDS_PER_MINUTE: 145,
+      VOICE_PROFILES: {
+        british_male: {
+          id: "british_male",
+          name: "Arthur — British Male",
+          accent: "british",
+          accentLabel: "British English",
+          gender: "male",
+          genderLabel: "Male Voice",
+          geminiVoice: "Charon",
+          styleInstruction: "Speak in a natural, articulate British English (Received Pronunciation) accent at a clear, learner-friendly pace.",
+          description: "Clear, composed British RP male voice ideal for academic passages and news reading.",
+          filenamePrefix: "British_Male"
+        },
+        british_female: {
+          id: "british_female",
+          name: "Clara — British Female",
+          accent: "british",
+          accentLabel: "British English",
+          gender: "female",
+          genderLabel: "Female Voice",
+          geminiVoice: "Kore",
+          styleInstruction: "Speak in a natural, articulate British English (Received Pronunciation) accent with expressive clarity.",
+          description: "Warm, crisp British RP female voice suited for textbook dialogues and storytelling.",
+          filenamePrefix: "British_Female"
+        },
+        american_male: {
+          id: "american_male",
+          name: "Ethan — American Male",
+          accent: "american",
+          accentLabel: "American English",
+          gender: "male",
+          genderLabel: "Male Voice",
+          geminiVoice: "Orus",
+          styleInstruction: "Speak in a clear, natural General American English accent with steady, engaging pacing.",
+          description: "Steady General American male voice great for presentations and everyday listening.",
+          filenamePrefix: "American_Male"
+        },
+        american_female: {
+          id: "american_female",
+          name: "Maya — American Female",
+          accent: "american",
+          accentLabel: "American English",
+          gender: "female",
+          genderLabel: "Female Voice",
+          geminiVoice: "Zephyr",
+          styleInstruction: "Speak in a bright, clear General American English accent at an approachable, natural pace.",
+          description: "Bright, approachable General American female voice ideal for shadowing practice.",
+          filenamePrefix: "American_Female"
+        }
+      },
+      SAMPLE_TEXTS: [
+        "Learning a new language takes patience, curiosity, and daily practice. When you listen to short passages every morning, your ear gradually begins to recognise natural rhythm, connected speech, and subtle differences between British and American pronunciation. Try listening once without looking at the screen, and then read along aloud to build confidence.",
+        "Good afternoon, everyone! Today we are exploring how urban gardens help cool down busy cities during the summer months. Even a small rooftop garden can absorb heat, filter rainwater, and create a welcoming habitat for birds and pollinators.",
+        "Excuse me, could you tell me where the nearest train station is? Walk straight ahead for two blocks, turn left at the traffic lights, and you will see the main entrance right across from the central library."
+      ]
+    };
+
+    const STORAGE_KEYS = {
+      THEME: "tts_studio_theme",
+      WORKER_URL: "tts_studio_worker_url",
+      ACCESS_CODE: "tts_studio_access_code"
+    };
+
+    const state = {
+      workerUrl: "",
+      accessCode: "",
+      selectedAccent: "british",
+      selectedGender: "female",
+      sampleIndex: 0,
+      isGenerating: false,
+      isPreviewing: false,
+      currentAudioUrl: null,
+      currentAudioFilename: "British_Female_Practice.wav",
+      playbackRate: 1,
+      previewCache: new Map()
+    };
+
+    const dom = {
+      accessGateSection: document.getElementById("accessGateSection"),
+      studioWorkspace: document.getElementById("studioWorkspace"),
+      workerConfigNotice: document.getElementById("workerConfigNotice"),
+      accessCodeForm: document.getElementById("accessCodeForm"),
+      classAccessCodeInput: document.getElementById("classAccessCodeInput"),
+      accessErrorBanner: document.getElementById("accessErrorBanner"),
+      verifyCodeBtn: document.getElementById("verifyCodeBtn"),
+      signOutBtn: document.getElementById("signOutBtn"),
+
+      themeToggleBtn: document.getElementById("themeToggleBtn"),
+      themeIconSun: document.getElementById("themeIconSun"),
+      themeIconMoon: document.getElementById("themeIconMoon"),
+      themeLabel: document.getElementById("themeLabel"),
+
+      englishTextInput: document.getElementById("englishTextInput"),
+      sampleTextBtn: document.getElementById("sampleTextBtn"),
+      clearTextBtn: document.getElementById("clearTextBtn"),
+      wordCountPill: document.getElementById("wordCountPill"),
+      charCountPill: document.getElementById("charCountPill"),
+      durationPill: document.getElementById("durationPill"),
+      textWarningBanner: document.getElementById("textWarningBanner"),
+      textErrorBanner: document.getElementById("textErrorBanner"),
+
+      accentButtons: document.querySelectorAll("[data-accent-btn]"),
+      genderButtons: document.querySelectorAll("[data-gender-btn]"),
+      voiceCardsContainer: document.getElementById("voiceCardsContainer"),
+      previewStatusBanner: document.getElementById("previewStatusBanner"),
+      selectedVoiceSummary: document.getElementById("selectedVoiceSummary"),
+
+      generateAudioBtn: document.getElementById("generateAudioBtn"),
+      generationLoading: document.getElementById("generationLoading"),
+      loadingMessage: document.getElementById("loadingMessage"),
+      generationErrorBanner: document.getElementById("generationErrorBanner"),
+
+      audioPlayerPanel: document.getElementById("audioPlayerPanel"),
+      nativeAudioEl: document.getElementById("nativeAudioEl"),
+      playerTrackTitle: document.getElementById("playerTrackTitle"),
+      playPauseBtn: document.getElementById("playPauseBtn"),
+      playIcon: document.getElementById("playIcon"),
+      pauseIcon: document.getElementById("pauseIcon"),
+      replayBtn: document.getElementById("replayBtn"),
+      audioSeekSlider: document.getElementById("audioSeekSlider"),
+      currentTimeLabel: document.getElementById("currentTimeLabel"),
+      totalTimeLabel: document.getElementById("totalTimeLabel"),
+      speedButtons: document.querySelectorAll("[data-speed]"),
+      regenerateAudioBtn: document.getElementById("regenerateAudioBtn"),
+      downloadAudioBtn: document.getElementById("downloadAudioBtn"),
+
+      openWorkerSettingsBtn: document.getElementById("openWorkerSettingsBtn"),
+      workerSettingsModal: document.getElementById("workerSettingsModal"),
+      closeWorkerModalBtn: document.getElementById("closeWorkerModalBtn"),
+      workerUrlForm: document.getElementById("workerUrlForm"),
+      workerUrlInput: document.getElementById("workerUrlInput"),
+      resetWorkerUrlBtn: document.getElementById("resetWorkerUrlBtn"),
+      workerModalFeedback: document.getElementById("workerModalFeedback")
+    };
+
+    function initApp() {
+      initTheme();
+      initWorkerUrl();
+      renderVoiceCards();
+      syncVoiceSelectorsUI();
+      bindEvents();
+      updateTextMetrics();
+
+      const savedCode = sessionStorage.getItem(STORAGE_KEYS.ACCESS_CODE);
+      if (savedCode && isWorkerConfigured()) {
+        state.accessCode = savedCode;
+        showWorkspace(true);
+      } else {
+        showWorkspace(false);
+      }
+    }
+
+    /* ---------------- Theme ---------------- */
+    function initTheme() {
+      const saved = localStorage.getItem(STORAGE_KEYS.THEME);
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      applyTheme(saved || (prefersDark ? "dark" : "light"));
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      const isDark = theme === "dark";
+      dom.themeIconSun.classList.toggle("hidden", !isDark);
+      dom.themeIconMoon.classList.toggle("hidden", isDark);
+      dom.themeLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute("data-theme");
+      const next = current === "dark" ? "light" : "dark";
+      applyTheme(next);
+      localStorage.setItem(STORAGE_KEYS.THEME, next);
+    }
+
+    /* ---------------- Worker URL ---------------- */
+    function normalizeWorkerUrl(url) {
+      return String(url || "").trim().replace(/\/+$/, "");
+    }
+
+    function initWorkerUrl() {
+      const override = localStorage.getItem(STORAGE_KEYS.WORKER_URL);
+      state.workerUrl = normalizeWorkerUrl(override || STUDIO_CONFIG.WORKER_URL);
+      dom.workerUrlInput.value = state.workerUrl;
+      updateWorkerNotice();
+    }
+
+    function isWorkerConfigured() {
+      return Boolean(
+        state.workerUrl &&
+        !state.workerUrl.includes("YOUR-SUBDOMAIN") &&
+        /^https?:\/\//i.test(state.workerUrl)
+      );
+    }
+
+    function updateWorkerNotice() {
+      dom.workerConfigNotice.classList.toggle("hidden", isWorkerConfigured());
+    }
+
+    /* ---------------- Access Gate ---------------- */
+    function showWorkspace(unlocked) {
+      dom.accessGateSection.classList.toggle("hidden", unlocked);
+      dom.studioWorkspace.classList.toggle("hidden", !unlocked);
+      dom.signOutBtn.classList.toggle("hidden", !unlocked);
+    }
+
+    async function handleVerifyAccessCode(e) {
+      e.preventDefault();
+      hideBanner(dom.accessErrorBanner);
+
+      if (!isWorkerConfigured()) {
+        showBanner(
+          dom.accessErrorBanner,
+          "Backend Worker URL is not configured yet. Click 'Backend URL' in the header to enter your deployed Cloudflare Worker URL."
+        );
+        return;
+      }
+
+      const code = dom.classAccessCodeInput.value.trim();
+      if (!code) {
+        showBanner(dom.accessErrorBanner, "Please enter your class access code.");
+        dom.classAccessCodeInput.focus();
+        return;
+      }
+
+      dom.verifyCodeBtn.disabled = true;
+      dom.verifyCodeBtn.textContent = "Verifying with classroom server...";
+
+      try {
+        const response = await fetch(`${state.workerUrl}/verify`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Class-Access-Code": code
+          },
+          body: JSON.stringify({ action: "verify" })
+        });
+
+        const payload = await safeJson(response);
+
+        if (!response.ok || !payload.valid) {
+          const msg = payload.error || (response.status === 401
+            ? "Incorrect class access code. Please check with your teacher."
+            : `Unable to verify code (HTTP ${response.status}).`);
+          showBanner(dom.accessErrorBanner, msg);
+          return;
+        }
+
+        state.accessCode = code;
+        sessionStorage.setItem(STORAGE_KEYS.ACCESS_CODE, code);
+        dom.classAccessCodeInput.value = "";
+        showWorkspace(true);
+      } catch (err) {
+        showBanner(
+          dom.accessErrorBanner,
+          "Network connection problem while reaching the backend server. Please check your internet connection and Worker URL."
+        );
+      } finally {
+        dom.verifyCodeBtn.disabled = false;
+        dom.verifyCodeBtn.innerHTML = "<span>Unlock Learning Studio</span>";
+      }
+    }
+
+    function signOutClassroom() {
+      state.accessCode = "";
+      sessionStorage.removeItem(STORAGE_KEYS.ACCESS_CODE);
+      dom.nativeAudioEl.pause();
+      showWorkspace(false);
+    }
+
+    /* ---------------- Text Management ---------------- */
+    function getTextStats(text) {
+      const chars = text.length;
+      const trimmed = text.trim();
+      const words = trimmed ? trimmed.split(/\s+/).length : 0;
+      const totalSeconds = words ? Math.max(1, Math.round((words / STUDIO_CONFIG.WORDS_PER_MINUTE) * 60)) : 0;
+      return { chars, words, totalSeconds };
+    }
+
+    function formatDurationEstimate(totalSeconds) {
+      if (totalSeconds === 0) return "0 sec";
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      if (mins === 0) return `${secs} sec`;
+      return `${mins} min ${secs} sec`;
+    }
+
+    function updateTextMetrics() {
+      const text = dom.englishTextInput.value;
+      const { chars, words, totalSeconds } = getTextStats(text);
+
+      dom.wordCountPill.textContent = `${words} ${words === 1 ? "word" : "words"}`;
+      dom.charCountPill.textContent = `${chars.toLocaleString()} / ${STUDIO_CONFIG.MAX_CHARS.toLocaleString()} characters`;
+      dom.durationPill.textContent = `Est. listening: ${formatDurationEstimate(totalSeconds)}`;
+
+      const isNearLimit = chars >= STUDIO_CONFIG.WARNING_CHARS && chars <= STUDIO_CONFIG.MAX_CHARS;
+      const isOverLimit = chars > STUDIO_CONFIG.MAX_CHARS;
+
+      dom.charCountPill.classList.toggle("warn", isNearLimit);
+      dom.charCountPill.classList.toggle("over", isOverLimit);
+      dom.englishTextInput.classList.toggle("limit-error", isOverLimit);
+
+      if (isNearLimit) {
+        const remaining = STUDIO_CONFIG.MAX_CHARS - chars;
+        showBanner(
+          dom.textWarningBanner,
+          `Approaching the 3,000-character limit (${remaining} character${remaining === 1 ? "" : "s"} remaining).`
+        );
+      } else {
+        hideBanner(dom.textWarningBanner);
+      }
+
+      if (isOverLimit) {
+        const excess = chars - STUDIO_CONFIG.MAX_CHARS;
+        showBanner(
+          dom.textErrorBanner,
+          `Your passage is ${excess.toLocaleString()} character${excess === 1 ? "" : "s"} over the 3,000-character limit. Nothing has been cut off—please shorten the text before generating audio.`
+        );
+      } else {
+        hideBanner(dom.textErrorBanner);
+      }
+    }
+
+    function validateTextForGeneration() {
+      const text = dom.englishTextInput.value;
+      if (!text.trim()) {
+        showBanner(dom.textErrorBanner, "Please enter or paste an English passage before generating audio.");
+        dom.englishTextInput.focus();
+        return false;
+      }
+      if (text.length > STUDIO_CONFIG.MAX_CHARS) {
+        updateTextMetrics();
+        dom.englishTextInput.focus();
+        return false;
+      }
+      hideBanner(dom.textErrorBanner);
+      return true;
+    }
+
+    /* ---------------- Voice Profiles ---------------- */
+    function getActiveProfileId() {
+      return `${state.selectedAccent}_${state.selectedGender}`;
+    }
+
+    function getActiveProfile() {
+      return STUDIO_CONFIG.VOICE_PROFILES[getActiveProfileId()];
+    }
+
+    function renderVoiceCards() {
+      const profiles = Object.values(STUDIO_CONFIG.VOICE_PROFILES);
+      dom.voiceCardsContainer.innerHTML = "";
+
+      profiles.forEach((profile) => {
+        const card = document.createElement("div");
+        card.className = "voice-card";
+        card.setAttribute("role", "radio");
+        card.setAttribute("tabindex", "0");
+        card.dataset.profileId = profile.id;
+
+        card.innerHTML = `
+          <div>
+            <div class="voice-card-top">
+              <h3 class="voice-name">${escapeHtml(profile.name)}</h3>
+            </div>
+            <div class="voice-badges">
+              <span class="badge badge-accent">${escapeHtml(profile.accentLabel)}</span>
+              <span class="badge">${escapeHtml(profile.genderLabel)}</span>
+            </div>
+            <p class="voice-desc" style="margin-top: 0.65rem;">${escapeHtml(profile.description)}</p>
+          </div>
+          <div class="voice-card-footer">
+            <span class="selected-indicator" data-selected-label></span>
+            <button type="button" class="preview-btn" data-preview-id="${escapeHtml(profile.id)}" aria-label="Preview ${escapeHtml(profile.name)}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+              <span>Preview</span>
+            </button>
+          </div>
+        `;
+
+        card.addEventListener("click", (e) => {
+          if (e.target.closest("[data-preview-id]")) return;
+          selectVoiceProfile(profile.id);
+        });
+
+        card.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            selectVoiceProfile(profile.id);
+          }
+        });
+
+        const previewBtn = card.querySelector("[data-preview-id]");
+        previewBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          selectVoiceProfile(profile.id);
+          handleVoicePreview(profile.id, previewBtn);
+        });
+
+        dom.voiceCardsContainer.appendChild(card);
+      });
+    }
+
+    function selectVoiceProfile(profileId) {
+      const profile = STUDIO_CONFIG.VOICE_PROFILES[profileId];
+      if (!profile) return;
+      state.selectedAccent = profile.accent;
+      state.selectedGender = profile.gender;
+      syncVoiceSelectorsUI();
+    }
+
+    function syncVoiceSelectorsUI() {
+      const activeProfile = getActiveProfile();
+
+      dom.accentButtons.forEach((btn) => {
+        const isActive = btn.dataset.accentBtn === state.selectedAccent;
+        btn.classList.toggle("active", isActive);
+        btn.setAttribute("aria-pressed", String(isActive));
+      });
+
+      dom.genderButtons.forEach((btn) => {
+        const isActive = btn.dataset.genderBtn === state.selectedGender;
+        btn.classList.toggle("active", isActive);
+        btn.setAttribute("aria-pressed", String(isActive));
+      });
+
+      const cards = dom.voiceCardsContainer.querySelectorAll(".voice-card");
+      cards.forEach((card) => {
+        const isSelected = card.dataset.profileId === activeProfile.id;
+        card.classList.toggle("selected", isSelected);
+        card.setAttribute("aria-checked", String(isSelected));
+        const label = card.querySelector("[data-selected-label]");
+        label.innerHTML = isSelected
+          ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Selected`
+          : "";
+      });
+
+      dom.selectedVoiceSummary.innerHTML = `Active voice: <strong>${escapeHtml(activeProfile.name)}</strong> (${escapeHtml(activeProfile.accentLabel)} &middot; ${escapeHtml(activeProfile.genderLabel)})`;
+    }
+
+    async function handleVoicePreview(profileId, buttonEl) {
+      hideBanner(dom.previewStatusBanner);
+
+      if (state.previewCache.has(profileId)) {
+        playPreviewUrl(state.previewCache.get(profileId));
+        return;
+      }
+
+      if (state.isPreviewing) return;
+      if (!isWorkerConfigured() || !state.accessCode) {
+        showBanner(dom.previewStatusBanner, "Please unlock the studio with your Worker URL and class access code to hear live Gemini voice previews.");
+        return;
+      }
+
+      state.isPreviewing = true;
+      const originalHtml = buttonEl.innerHTML;
+      buttonEl.disabled = true;
+      buttonEl.textContent = "Loading...";
+
+      try {
+        const data = await requestTtsFromBackend({
+          text: "",
+          profile: profileId,
+          preview: true
+        });
+
+        const blob = base64ToWavBlob(data.audioBase64, data.mimeType || "audio/wav");
+        const url = URL.createObjectURL(blob);
+        state.previewCache.set(profileId, url);
+        playPreviewUrl(url);
+      } catch (err) {
+        showBanner(dom.previewStatusBanner, err.message || "Unable to load voice preview.");
+      } finally {
+        state.isPreviewing = false;
+        buttonEl.disabled = false;
+        buttonEl.innerHTML = originalHtml;
+      }
+    }
+
+    let activePreviewAudio = null;
+    function playPreviewUrl(url) {
+      if (activePreviewAudio) {
+        activePreviewAudio.pause();
+        activePreviewAudio = null;
+      }
+      activePreviewAudio = new Audio(url);
+      activePreviewAudio.play().catch(() => {
+        showBanner(dom.previewStatusBanner, "Browser blocked audio playback. Please interact with the page and try again.");
+      });
+    }
+
+    /* ---------------- Gemini TTS Generation ---------------- */
+    async function handleGenerateAudio() {
+      if (state.isGenerating) return;
+      hideBanner(dom.generationErrorBanner);
+
+      if (!validateTextForGeneration()) return;
+
+      if (!isWorkerConfigured()) {
+        showBanner(
+          dom.generationErrorBanner,
+          "Backend Worker URL is not configured. Open 'Backend URL' in the header to set your Cloudflare Worker URL."
+        );
+        return;
+      }
+
+      if (!state.accessCode) {
+        showWorkspace(false);
+        return;
+      }
+
+      const profile = getActiveProfile();
+      const text = dom.englishTextInput.value;
+
+      state.isGenerating = true;
+      dom.generateAudioBtn.disabled = true;
+      dom.regenerateAudioBtn.disabled = true;
+      dom.loadingMessage.textContent = `Generating natural ${profile.accentLabel} (${profile.genderLabel}) speech with Gemini 3.8 Flash TTS...`;
+      dom.generationLoading.classList.remove("hidden");
+
+      try {
+        const result = await requestTtsFromBackend({
+          text,
+          profile: profile.id,
+          preview: false
+        });
+
+        const mimeType = result.mimeType || "audio/wav";
+        const wavBlob = base64ToWavBlob(result.audioBase64, mimeType);
+        const filename = result.filename || `${profile.filenamePrefix}_Practice.wav`;
+
+        loadGeneratedAudio(wavBlob, filename);
+      } catch (err) {
+        showBanner(dom.generationErrorBanner, err.message || "Failed to generate audio. Please try again.");
+      } finally {
+        state.isGenerating = false;
+        dom.generateAudioBtn.disabled = false;
+        dom.regenerateAudioBtn.disabled = false;
+        dom.generationLoading.classList.add("hidden");
+      }
+    }
+
+    async function requestTtsFromBackend({ text, profile, preview }) {
+      let response;
+      try {
+        response = await fetch(`${state.workerUrl}/tts`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Class-Access-Code": state.accessCode
+          },
+          body: JSON.stringify({ text, profile, preview: Boolean(preview) })
+        });
+      } catch (networkErr) {
+        throw new Error("Network connection problem. Could not reach the Cloudflare Worker backend.");
+      }
+
+      const payload = await safeJson(response);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error(payload.error || "Incorrect or expired class access code. Click 'Change Code' to re-enter it.");
+        }
+        if (response.status === 429) {
+          throw new Error(payload.error || "Rate limit reached. Please wait a moment before generating more audio.");
+        }
+        if (response.status === 503 || response.status === 502) {
+          throw new Error(payload.error || "The speech service is temporarily unavailable. Please try again shortly.");
+        }
+        throw new Error(payload.error || `Audio generation failed (HTTP ${response.status}).`);
+      }
+
+      if (!payload || !payload.audioBase64) {
+        throw new Error("The server returned a response without audio data. Please try again.");
+      }
+
+      return payload;
+    }
+
+    function base64ToWavBlob(base64String, mimeType = "audio/wav") {
+      const cleanBase64 = base64String.replace(/\s+/g, "");
+      const binaryString = atob(cleanBase64);
+      const length = binaryString.length;
+      const bytes = new Uint8Array(length);
+      for (let i = 0; i < length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      return new Blob([bytes], { type: mimeType });
+    }
+
+    /* ---------------- Audio Playback & Download ---------------- */
+    function releaseCurrentAudioUrl() {
+      if (state.currentAudioUrl) {
+        URL.revokeObjectURL(state.currentAudioUrl);
+        state.currentAudioUrl = null;
+      }
+    }
+
+    function loadGeneratedAudio(blob, filename) {
+      dom.nativeAudioEl.pause();
+      releaseCurrentAudioUrl();
+
+      const objectUrl = URL.createObjectURL(blob);
+      state.currentAudioUrl = objectUrl;
+      state.currentAudioFilename = filename;
+
+      dom.nativeAudioEl.src = objectUrl;
+      dom.nativeAudioEl.playbackRate = state.playbackRate;
+      dom.playerTrackTitle.textContent = filename;
+      dom.audioSeekSlider.value = 0;
+      dom.currentTimeLabel.textContent = "0:00";
+      dom.totalTimeLabel.textContent = "0:00";
+      updatePlayPauseIcons(false);
+
+      dom.audioPlayerPanel.classList.remove("hidden");
+      dom.nativeAudioEl.load();
+    }
+
+    function updatePlayPauseIcons(isPlaying) {
+      dom.playIcon.classList.toggle("hidden", isPlaying);
+      dom.pauseIcon.classList.toggle("hidden", !isPlaying);
+      dom.playPauseBtn.setAttribute("aria-label", isPlaying ? "Pause audio" : "Play audio");
+    }
+
+    function formatTime(seconds) {
+      if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, "0")}`;
+    }
+
+    function togglePlayPause() {
+      if (!state.currentAudioUrl) return;
+      if (dom.nativeAudioEl.paused) {
+        dom.nativeAudioEl.play().catch(() => {
+          showBanner(dom.generationErrorBanner, "Unable to play audio in this browser.");
+        });
+      } else {
+        dom.nativeAudioEl.pause();
+      }
+    }
+
+    function replayAudio() {
+      if (!state.currentAudioUrl) return;
+      dom.nativeAudioEl.currentTime = 0;
+      dom.nativeAudioEl.play().catch(() => {});
+    }
+
+    function setPlaybackSpeed(speed) {
+      state.playbackRate = speed;
+      dom.nativeAudioEl.playbackRate = speed;
+      dom.speedButtons.forEach((btn) => {
+        btn.classList.toggle("active", Number(btn.dataset.speed) === speed);
+      });
+    }
+
+    function downloadCurrentAudio() {
+      if (!state.currentAudioUrl) return;
+      const anchor = document.createElement("a");
+      anchor.href = state.currentAudioUrl;
+      anchor.download = state.currentAudioFilename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+    }
+
+    /* ---------------- Events & Helpers ---------------- */
+    function bindEvents() {
+      dom.themeToggleBtn.addEventListener("click", toggleTheme);
+      dom.accessCodeForm.addEventListener("submit", handleVerifyAccessCode);
+      dom.signOutBtn.addEventListener("click", signOutClassroom);
+
+      dom.englishTextInput.addEventListener("input", updateTextMetrics);
+
+      dom.sampleTextBtn.addEventListener("click", () => {
+        const samples = STUDIO_CONFIG.SAMPLE_TEXTS;
+        dom.englishTextInput.value = samples[state.sampleIndex % samples.length];
+        state.sampleIndex += 1;
+        updateTextMetrics();
+        dom.englishTextInput.focus();
+      });
+
+      dom.clearTextBtn.addEventListener("click", () => {
+        dom.englishTextInput.value = "";
+        updateTextMetrics();
+        dom.englishTextInput.focus();
+      });
+
+      dom.accentButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          state.selectedAccent = btn.dataset.accentBtn;
+          syncVoiceSelectorsUI();
+        });
+      });
+
+      dom.genderButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          state.selectedGender = btn.dataset.genderBtn;
+          syncVoiceSelectorsUI();
+        });
+      });
+
+      dom.generateAudioBtn.addEventListener("click", handleGenerateAudio);
+      dom.regenerateAudioBtn.addEventListener("click", handleGenerateAudio);
+
+      dom.playPauseBtn.addEventListener("click", togglePlayPause);
+      dom.replayBtn.addEventListener("click", replayAudio);
+      dom.downloadAudioBtn.addEventListener("click", downloadCurrentAudio);
+
+      dom.speedButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          setPlaybackSpeed(Number(btn.dataset.speed));
+        });
+      });
+
+      dom.nativeAudioEl.addEventListener("play", () => updatePlayPauseIcons(true));
+      dom.nativeAudioEl.addEventListener("pause", () => updatePlayPauseIcons(false));
+      dom.nativeAudioEl.addEventListener("ended", () => updatePlayPauseIcons(false));
+
+      dom.nativeAudioEl.addEventListener("loadedmetadata", () => {
+        const dur = dom.nativeAudioEl.duration;
+        dom.totalTimeLabel.textContent = formatTime(dur);
+        dom.audioSeekSlider.max = Number.isFinite(dur) && dur > 0 ? dur : 100;
+      });
+
+      dom.nativeAudioEl.addEventListener("timeupdate", () => {
+        const current = dom.nativeAudioEl.currentTime;
+        dom.currentTimeLabel.textContent = formatTime(current);
+        if (Number.isFinite(dom.nativeAudioEl.duration) && dom.nativeAudioEl.duration > 0) {
+          dom.audioSeekSlider.value = current;
+        }
+      });
+
+      dom.audioSeekSlider.addEventListener("input", () => {
+        if (Number.isFinite(dom.nativeAudioEl.duration)) {
+          dom.nativeAudioEl.currentTime = Number(dom.audioSeekSlider.value);
+        }
+      });
+
+      // Worker settings modal
+      dom.openWorkerSettingsBtn.addEventListener("click", () => {
+        dom.workerUrlInput.value = state.workerUrl;
+        hideBanner(dom.workerModalFeedback);
+        dom.workerSettingsModal.classList.remove("hidden");
+      });
+
+      dom.closeWorkerModalBtn.addEventListener("click", () => {
+        dom.workerSettingsModal.classList.add("hidden");
+      });
+
+      dom.workerSettingsModal.addEventListener("click", (e) => {
+        if (e.target === dom.workerSettingsModal) dom.workerSettingsModal.classList.add("hidden");
+      });
+
+      dom.workerUrlForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const cleaned = normalizeWorkerUrl(dom.workerUrlInput.value);
+        if (!/^https?:\/\//i.test(cleaned)) {
+          dom.workerModalFeedback.className = "alert-banner alert-error";
+          dom.workerModalFeedback.textContent = "Please enter a valid http:// or https:// Worker URL.";
+          dom.workerModalFeedback.classList.remove("hidden");
+          return;
+        }
+        state.workerUrl = cleaned;
+        localStorage.setItem(STORAGE_KEYS.WORKER_URL, cleaned);
+        updateWorkerNotice();
+        dom.workerModalFeedback.className = "alert-banner alert-success";
+        dom.workerModalFeedback.textContent = "Worker URL saved for this browser.";
+        dom.workerModalFeedback.classList.remove("hidden");
+      });
+
+      dom.resetWorkerUrlBtn.addEventListener("click", () => {
+        localStorage.removeItem(STORAGE_KEYS.WORKER_URL);
+        initWorkerUrl();
+        dom.workerModalFeedback.className = "alert-banner alert-info";
+        dom.workerModalFeedback.textContent = "Reset to default WORKER_URL from script configuration.";
+        dom.workerModalFeedback.classList.remove("hidden");
+      });
+
+      window.addEventListener("beforeunload", () => {
+        releaseCurrentAudioUrl();
+        state.previewCache.forEach((url) => URL.revokeObjectURL(url));
+        state.previewCache.clear();
+      });
+    }
+
+    function showBanner(el, message) {
+      el.textContent = message;
+      el.classList.remove("hidden");
+    }
+
+    function hideBanner(el) {
+      el.textContent = "";
+      el.classList.add("hidden");
+    }
+
+    async function safeJson(response) {
+      try {
+        return await response.json();
+      } catch {
+        return {};
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    initApp();
+  </script>
+
+  <script id="setup-export-script">
+    (function () {
+      const setupModal = document.getElementById("setupSourceModal");
+      const openBtn = document.getElementById("openSetupModalBtn");
+      const closeBtn = document.getElementById("closeSetupModalBtn");
+      const tabBtns = setupModal.querySelectorAll("[data-tab]");
+      const panels = {
+        frontend: document.getElementById("tabPanelFrontend"),
+        backend: document.getElementById("tabPanelBackend"),
+        guide: document.getElementById("tabPanelGuide"),
+        checklist: document.getElementById("tabPanelChecklist")
+      };
+
+      const WORKER_JS_CODE = `/**
+ * PROJECT 2 - BACKEND: Cloudflare Worker (worker.js)
+ * English Text-to-Speech Learning Studio
+ *
+ * Required Cloudflare Worker Secrets (via \`wrangler secret put\`):
+ *   - GEMINI_API_KEY
+ *   - CLASS_ACCESS_CODE
+ *
+ * Optional Environment Variable (in wrangler.toml or Cloudflare Dashboard):
+ *   - ALLOWED_ORIGIN (e.g. "https://your-username.github.io")
+ */
+
+const GEMINI_MODEL = "gemini-3.8-flash-tts";
+const GEMINI_INTERACTIONS_URL = "https://generativelanguage.googleapis.com/v1beta/interactions";
+const DEFAULT_ALLOWED_ORIGIN = "https://YOUR-GITHUB-USERNAME.github.io";
+const MAX_TEXT_LENGTH = 3000;
+const PREVIEW_TEXT = "Hello! Welcome to the English Text-to-Speech Learning Studio. Let's practise listening together.";
+
+/**
+ * Single configurable mapping between Studio profile IDs,
+ * Gemini prebuilt voices, and speech_metadata.style instructions.
+ */
+const VOICE_PROFILES = {
+  british_male: {
+    filenamePrefix: "British_Male",
+    voice: "Charon",
+    style: "Speak in a natural, articulate British English (Received Pronunciation) accent. Use a clear, warm male voice at a steady, learner-friendly pace for high school listening practice. Read the text verbatim without changing any words."
+  },
+  british_female: {
+    filenamePrefix: "British_Female",
+    voice: "Kore",
+    style: "Speak in a natural, articulate British English (Received Pronunciation) accent. Use a clear, expressive female voice at a steady, learner-friendly pace for high school listening practice. Read the text verbatim without changing any words."
+  },
+  american_male: {
+    filenamePrefix: "American_Male",
+    voice: "Orus",
+    style: "Speak in a natural, clear General American English accent. Use a steady, friendly male voice at a learner-friendly pace for high school listening practice. Read the text verbatim without changing any words."
+  },
+  american_female: {
+    filenamePrefix: "American_Female",
+    voice: "Zephyr",
+    style: "Speak in a natural, clear General American English accent. Use a bright, engaging female voice at a learner-friendly pace for high school listening practice. Read the text verbatim without changing any words."
+  }
+};
+
+// Lightweight per-isolate rate limiter (sliding window)
+const rateBucket = new Map();
+const authFailBucket = new Map();
+
+function checkRateLimit(bucketMap, key, maxRequests, windowMs) {
+  const now = Date.now();
+  const recent = (bucketMap.get(key) || []).filter((ts) => now - ts < windowMs);
+  if (recent.length >= maxRequests) {
+    return false;
+  }
+  recent.push(now);
+  bucketMap.set(key, recent);
+  return true;
+}
+
+function constantTimeEqual(a, b) {
+  if (typeof a !== "string" || typeof b !== "string") return false;
+  const maxLen = Math.max(a.length, b.length);
+  let mismatch = a.length ^ b.length;
+  for (let i = 0; i < maxLen; i++) {
+    const ca = i < a.length ? a.charCodeAt(i) : 0;
+    const cb = i < b.length ? b.charCodeAt(i) : 0;
+    mismatch |= ca ^ cb;
+  }
+  return mismatch === 0;
+}
+
+function getCorsHeaders(request, env) {
+  const configured = (env.ALLOWED_ORIGIN || DEFAULT_ALLOWED_ORIGIN)
+    .split(",")
+    .map((o) => o.trim().replace(/\\/+$/, ""))
+    .filter(Boolean);
+
+  const origin = (request.headers.get("Origin") || "").replace(/\\/+$/, "");
+  const isAllowed = origin && configured.includes(origin);
+
+  const headers = {
+    "Vary": "Origin",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, X-Class-Access-Code",
+    "Access-Control-Max-Age": "86400"
+  };
+
+  if (isAllowed) {
+    headers["Access-Control-Allow-Origin"] = origin;
+  }
+
+  return { headers, isAllowed, origin };
+}
+
+function jsonResponse(body, status, corsHeaders) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+      ...corsHeaders
+    }
+  });
+}
+
+function extractAudioFromGeminiResponse(data) {
+  // Primary Gemini Interactions API format (steps -> model_output -> content)
+  if (Array.isArray(data.steps)) {
+    for (const step of data.steps) {
+      if (step && Array.isArray(step.content)) {
+        for (const block of step.content) {
+          if (block && block.type === "audio" && typeof block.data === "string" && block.data.length > 0) {
+            return {
+              base64: block.data,
+              mimeType: block.mime_type || "audio/wav"
+            };
+          }
+        }
+      }
+    }
+  }
+
+  // Fallback for legacy outputs schema
+  if (Array.isArray(data.outputs)) {
+    for (const output of data.outputs) {
+      if (output && output.type === "audio" && typeof output.data === "string" && output.data.length > 0) {
+        return {
+          base64: output.data,
+          mimeType: output.mime_type || "audio/wav"
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
+function ensureWavHeader(base64Data, mimeType) {
+  const binary = atob(base64Data);
+  const len = binary.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+
+  const hasRiffHeader =
+    len >= 12 &&
+    bytes[0] === 0x52 &&
+    bytes[1] === 0x49 &&
+    bytes[2] === 0x46 &&
+    bytes[3] === 0x46;
+
+  if (hasRiffHeader) {
+    return base64Data;
+  }
+
+  // Wrap raw PCM (24kHz, mono, 16-bit signed LE) in a standard 44-byte WAV header
+  const sampleRate = 24000;
+  const numChannels = 1;
+  const bitsPerSample = 16;
+  const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+  const blockAlign = numChannels * (bitsPerSample / 8);
+
+  const wavBuffer = new ArrayBuffer(44 + bytes.length);
+  const view = new DataView(wavBuffer);
+  const writeStr = (offset, str) => {
+    for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+  };
+
+  writeStr(0, "RIFF");
+  view.setUint32(4, 36 + bytes.length, true);
+  writeStr(8, "WAVE");
+  writeStr(12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, byteRate, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, bitsPerSample, true);
+  writeStr(36, "data");
+  view.setUint32(40, bytes.length, true);
+
+  new Uint8Array(wavBuffer, 44).set(bytes);
+
+  const fullBytes = new Uint8Array(wavBuffer);
+  let outBinary = "";
+  const chunkSize = 0x8000;
+  for (let i = 0; i < fullBytes.length; i += chunkSize) {
+    outBinary += String.fromCharCode(...fullBytes.subarray(i, i + chunkSize));
+  }
+  return btoa(outBinary);
+}
+
+export default {
+  async fetch(request, env) {
+    const { headers: corsHeaders, isAllowed, origin } = getCorsHeaders(request, env);
+
+    if (request.method === "OPTIONS") {
+      if (!isAllowed) {
+        return new Response("Origin not allowed", { status: 403 });
+      }
+      return new Response(null, { status: 204, headers: corsHeaders });
+    }
+
+    if (origin && !isAllowed) {
+      return jsonResponse({ error: "CORS origin not allowed." }, 403, corsHeaders);
+    }
+
+    if (request.method !== "POST") {
+      return jsonResponse({ error: "Method not allowed. Use POST." }, 405, corsHeaders);
+    }
+
+    if (!env.GEMINI_API_KEY || !env.CLASS_ACCESS_CODE) {
+      return jsonResponse({ error: "Server configuration incomplete." }, 500, corsHeaders);
+    }
+
+    const clientIp = request.headers.get("CF-Connecting-IP") || "unknown";
+    const providedCode = (request.headers.get("X-Class-Access-Code") || "").trim();
+
+    if (!constantTimeEqual(providedCode, env.CLASS_ACCESS_CODE.trim())) {
+      const authAllowed = checkRateLimit(authFailBucket, clientIp, 12, 5 * 60 * 1000);
+      if (!authAllowed) {
+        return jsonResponse(
+          { error: "Too many incorrect access code attempts. Please wait 5 minutes." },
+          429,
+          corsHeaders
+        );
+      }
+      return jsonResponse(
+        { error: "Incorrect class access code. Please check with your teacher." },
+        401,
+        corsHeaders
+      );
+    }
+
+    const url = new URL(request.url);
+    if (url.pathname === "/verify") {
+      return jsonResponse({ valid: true }, 200, corsHeaders);
+    }
+
+    // Rate limit TTS requests per IP (15 requests per minute)
+    if (!checkRateLimit(rateBucket, clientIp, 15, 60 * 1000)) {
+      return jsonResponse(
+        { error: "Rate limit exceeded. Please wait a minute before generating more audio." },
+        429,
+        { ...corsHeaders, "Retry-After": "60" }
+      );
+    }
+
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return jsonResponse({ error: "Invalid JSON request body." }, 400, corsHeaders);
+    }
+
+    const profileId = typeof body.profile === "string" ? body.profile.trim() : "";
+    const profileConfig = VOICE_PROFILES[profileId];
+    if (!profileConfig) {
+      return jsonResponse({ error: "Invalid voice profile selected." }, 400, corsHeaders);
+    }
+
+    const isPreview = Boolean(body.preview);
+    const inputText = isPreview ? PREVIEW_TEXT : body.text;
+
+    if (typeof inputText !== "string" || !inputText.trim()) {
+      return jsonResponse({ error: "Text input cannot be empty." }, 400, corsHeaders);
+    }
+
+    if (inputText.length > MAX_TEXT_LENGTH) {
+      return jsonResponse(
+        { error: \`Text exceeds the maximum limit of \${MAX_TEXT_LENGTH} characters.\` },
+        400,
+        corsHeaders
+      );
+    }
+
+    const geminiPayload = {
+      model: GEMINI_MODEL,
+      input: [
+        {
+          type: "user_input",
+          content: [
+            {
+              type: "text",
+              text: inputText,
+              annotations: [
+                {
+                  type: "speech_metadata",
+                  style: profileConfig.style
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      response_format: {
+        type: "audio"
+      },
+      generation_config: {
+        speech_config: [
+          {
+            voice: profileConfig.voice
+          }
+        ]
+      },
+      store: false
+    };
+
+    let geminiResponse;
+    try {
+      geminiResponse = await fetch(GEMINI_INTERACTIONS_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": env.GEMINI_API_KEY,
+          "Api-Revision": "2026-05-20"
+        },
+        body: JSON.stringify(geminiPayload)
+      });
+    } catch {
+      return jsonResponse(
+        { error: "Unable to reach the Gemini speech service. Please try again shortly." },
+        503,
+        corsHeaders
+      );
+    }
+
+    if (!geminiResponse.ok) {
+      if (geminiResponse.status === 429) {
+        return jsonResponse(
+          { error: "Speech service rate limit reached. Please wait a moment and try again." },
+          429,
+          corsHeaders
+        );
+      }
+      if (geminiResponse.status >= 500) {
+        return jsonResponse(
+          { error: "Gemini speech service is temporarily unavailable. Please try again." },
+          503,
+          corsHeaders
+        );
+      }
+      return jsonResponse(
+        { error: \`Speech generation request failed (upstream status \${geminiResponse.status}).\` },
+        502,
+        corsHeaders
+      );
+    }
+
+    let geminiData;
+    try {
+      geminiData = await geminiResponse.json();
+    } catch {
+      return jsonResponse({ error: "Invalid response received from Gemini API." }, 502, corsHeaders);
+    }
+
+    const audio = extractAudioFromGeminiResponse(geminiData);
+    if (!audio) {
+      return jsonResponse(
+        { error: "Gemini did not return an audio response. Please try again." },
+        502,
+        corsHeaders
+      );
+    }
+
+    const wavBase64 = ensureWavHeader(audio.base64, audio.mimeType);
+    const filename = isPreview
+      ? \`\${profileConfig.filenamePrefix}_Preview.wav\`
+      : \`\${profileConfig.filenamePrefix}_Practice.wav\`;
+
+    return jsonResponse(
+      {
+        audioBase64: wavBase64,
+        mimeType: "audio/wav",
+        filename,
+        profile: profileId
+      },
+      200,
+      corsHeaders
+    );
+  }
+};
+`;
+
+      function buildStandaloneIndexHtml() {
+        const clone = document.documentElement.cloneNode(true);
+        const styleEl = clone.querySelector("#app-styles");
+        if (styleEl) {
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = "style.css";
+          styleEl.replaceWith(link);
+        }
+        const openSetupBtn = clone.querySelector("#openSetupModalBtn");
+        if (openSetupBtn) openSetupBtn.remove();
+        const setupModalEl = clone.querySelector("#setupSourceModal");
+        if (setupModalEl) setupModalEl.remove();
+        const mainScript = clone.querySelector("#main-app-script");
+        if (mainScript) {
+          const scriptTag = document.createElement("script");
+          scriptTag.src = "script.js";
+          mainScript.replaceWith(scriptTag);
+        }
+        const exportScript = clone.querySelector("#setup-export-script");
+        if (exportScript) exportScript.remove();
+        return "<!DOCTYPE html>\n" + clone.outerHTML;
+      }
+
+      function renderFileBlock(container, filename, content) {
+        const wrap = document.createElement("div");
+        wrap.className = "code-block-wrap";
+
+        const toolbar = document.createElement("div");
+        toolbar.className = "code-toolbar";
+
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = filename;
+
+        const btnGroup = document.createElement("div");
+        btnGroup.style.display = "flex";
+        btnGroup.style.gap = "0.45rem";
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "btn btn-secondary";
+        copyBtn.style.padding = "0.28rem 0.65rem";
+        copyBtn.style.fontSize = "0.78rem";
+        copyBtn.textContent = "Copy";
+        copyBtn.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(content);
+            copyBtn.textContent = "Copied!";
+            setTimeout(() => { copyBtn.textContent = "Copy"; }, 1600);
+          } catch {
+            copyBtn.textContent = "Select & Copy";
+          }
+        });
+
+        const dlBtn = document.createElement("button");
+        dlBtn.type = "button";
+        dlBtn.className = "btn btn-primary";
+        dlBtn.style.padding = "0.28rem 0.65rem";
+        dlBtn.style.fontSize = "0.78rem";
+        dlBtn.textContent = "Download";
+        dlBtn.addEventListener("click", () => {
+          const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        });
+
+        btnGroup.appendChild(copyBtn);
+        btnGroup.appendChild(dlBtn);
+        toolbar.appendChild(nameSpan);
+        toolbar.appendChild(btnGroup);
+
+        const pre = document.createElement("pre");
+        pre.className = "code-pre";
+        pre.textContent = content;
+
+        wrap.appendChild(toolbar);
+        wrap.appendChild(pre);
+        container.appendChild(wrap);
+      }
+
+      let rendered = false;
+      function populateSourceExport() {
+        if (rendered) return;
+        rendered = true;
+        const frontendContainer = document.getElementById("frontendFilesContainer");
+        const backendContainer = document.getElementById("backendFilesContainer");
+
+        const cssText = document.getElementById("app-styles").textContent.trim();
+        const jsText = document.getElementById("main-app-script").textContent.trim();
+        const htmlText = buildStandaloneIndexHtml();
+
+        renderFileBlock(frontendContainer, "index.html", htmlText);
+        renderFileBlock(frontendContainer, "style.css", cssText);
+        renderFileBlock(frontendContainer, "script.js", jsText);
+        renderFileBlock(backendContainer, "worker.js", WORKER_JS_CODE.trim());
+      }
+
+      openBtn.addEventListener("click", () => {
+        populateSourceExport();
+        setupModal.classList.remove("hidden");
+      });
+
+      closeBtn.addEventListener("click", () => {
+        setupModal.classList.add("hidden");
+      });
+
+      setupModal.addEventListener("click", (e) => {
+        if (e.target === setupModal) setupModal.classList.add("hidden");
+      });
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const target = btn.dataset.tab;
+          tabBtns.forEach((b) => {
+            const active = b === btn;
+            b.classList.toggle("active", active);
+            b.setAttribute("aria-selected", String(active));
+          });
+          Object.entries(panels).forEach(([key, panel]) => {
+            panel.classList.toggle("hidden", key !== target);
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
